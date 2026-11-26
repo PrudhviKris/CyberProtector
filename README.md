@@ -1,13 +1,3 @@
----
-title: CyberGuard
-emoji: 🛡️
-colorFrom: red
-colorTo: gray
-sdk: docker
-app_port: 7860
-pinned: false
-license: mit
----
 # CyberGuard: Cyberbullying Detection with NLP & Machine Learning
 
 🌐 **Live Demo:** [cyberprotector.onrender.com](https://cyberprotector.onrender.com) · [Analyse page](https://cyberprotector.onrender.com/verify) · [Model card](https://cyberprotector.onrender.com/model)
@@ -191,3 +181,26 @@ Cyber Bulling Detection Using Python.ipynb   original exploration notebook
 - Sarcasm, reclaimed slurs, and code-mixed Hindi-English (Hinglish) text remain hard. A multilingual model such as `xlm-roberta` would help.
 - Explanations come from the baseline model. Transformer-level attributions (Integrated Gradients / SHAP) would explain threats that use no abusive vocabulary.
 - Possible next steps: a browser extension that scans pages, image/OCR analysis of memes, and active learning from help-desk "wrong prediction" reports.
+
+
+## Hugging Face Spaces config
+
+<details>
+<summary>Click to view the Space metadata (only needed when deploying to Hugging Face Spaces)</summary>
+
+To deploy on Hugging Face Spaces, place this block at the very top of `README.md`:
+
+```yaml
+---
+title: CyberGuard
+emoji: 🛡️
+colorFrom: red
+colorTo: gray
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+---
+```
+
+</details>
