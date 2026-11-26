@@ -60,14 +60,39 @@ def test_login_required_pages_redirect(client):
 
 
 # ---------- auth / roles ----------
-def test_first_user_is_admin_second_is_not(client, app):
+def test_public_signups_never_get_admin(client, app):
     register(client)
     client.post("/logout")
     register(client, "bob", "bob@example.com")
     with app.app_context():
-        assert User.query.filter_by(username="alice").one().is_admin
-        assert not User.query.filter_by(username="bob").one().is_admin
+        assert not any(u.is_admin for u in User.query.all())
     assert client.get("/admin/").status_code == 403
+    # a crafted form field cannot grant admin either
+    client.post("/logout")
+    client.post("/register", data={"username": "eve", "email": "eve@example.com", "password": "password123",
+                                   "is_admin": "1"})
+    with app.app_context():
+        assert not User.query.filter_by(username="eve").one().is_admin
+
+
+def test_owner_admin_from_env():
+    class OwnerConfig(TestConfig):
+        ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD = "owner", "owner@example.com", "a-long-owner-pass"
+    app = create_app(OwnerConfig)
+    with app.app_context():
+        admins = User.query.filter_by(is_admin=True).all()
+        assert [u.username for u in admins] == ["owner"]
+    c = app.test_client()
+    c.post("/login", data={"identifier": "owner", "password": "a-long-owner-pass"})
+    assert c.get("/admin/").status_code == 200
+
+
+def test_short_admin_password_rejected():
+    class WeakConfig(TestConfig):
+        ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD = "owner", "owner@example.com", "short"
+    app = create_app(WeakConfig)
+    with app.app_context():
+        assert User.query.count() == 0
 
 
 def test_login_and_bad_password(client):
@@ -78,8 +103,11 @@ def test_login_and_bad_password(client):
     assert r.status_code == 302
 
 
-def test_admin_dashboard_and_history(client):
+def test_admin_dashboard_and_history(client, app):
     register(client)
+    with app.app_context():
+        User.query.one().is_admin = True
+        db.session.commit()
     client.post("/verify", data={"text": "you are a moron"})
     assert b"moron" in client.get("/history").data
     assert client.get("/admin/").status_code == 200

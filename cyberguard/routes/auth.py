@@ -34,14 +34,14 @@ def register():
             for e in errors:
                 flash(e, "error")
             return render_template("auth/register.html", username=username, email=email), 400
-        user = User(username=username, email=email)
+        # Public sign-ups are ALWAYS regular users. Admins can only be created by the owner,
+        # via the ADMIN_* environment variables or the `flask create-admin` command.
+        user = User(username=username, email=email, is_admin=False)
         user.set_password(password)
-        if User.query.count() == 0:
-            user.is_admin = True   # first account becomes the administrator
         db.session.add(user)
         db.session.commit()
         login_user(user)
-        flash("Welcome to CyberGuard!" + (" You are the administrator." if user.is_admin else ""), "success")
+        flash("Welcome to CyberGuard!", "success")
         return redirect(url_for("main.verify"))
     return render_template("auth/register.html")
 

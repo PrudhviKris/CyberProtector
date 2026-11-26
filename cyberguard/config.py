@@ -15,6 +15,11 @@ class Config:
     THRESHOLD = float(os.environ.get("THRESHOLD", "0.5"))
     BATCH_LIMIT = int(os.environ.get("BATCH_LIMIT", "500"))
     ARTIFACTS_DIR = ROOT / "artifacts"
+    # Owner-only admin bootstrap: set these on the server (never commit them).
+    # On startup the app creates this account (or promotes it) as the only admin.
+    ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "")
+    ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "")
+    ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
 
 
 class TestConfig(Config):

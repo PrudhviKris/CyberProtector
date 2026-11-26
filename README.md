@@ -22,7 +22,7 @@ dashboard, a help-desk ticket system and a REST API.
 | **Analyze** | Paste text → verdict, probability gauge, category bars, highlighted trigger words |
 | **Batch** | Upload `.csv` / `.txt` (up to 500 messages) → summary stats + downloadable results |
 | **History** | Every signed-in analysis is saved; filter, paginate, export CSV |
-| **Accounts** | Register / login (hashed passwords, CSRF protection); the first account becomes admin |
+| **Accounts** | Register / login (hashed passwords, CSRF protection). Public sign-ups are always regular users; only the owner can create admins |
 | **Admin** | KPIs, 14-day trend, category / severity / source charts, recent flagged messages, ticket management, user list |
 | **Help desk** | Tickets saved to the database and resolved by admins; includes helpline information |
 | **REST API** | `POST /api/v1/analyze` with a per-user API key; single or batch requests |
@@ -82,12 +82,17 @@ python training/train_baseline.py      # trains the model and writes artifacts/ 
 python run.py                          # http://localhost:5000
 ```
 
-The first run downloads `unitary/toxic-bert` (about 440 MB) to the Hugging Face cache. The first account you register becomes the administrator.
-You can also create an admin from the command line:
+The first run downloads `unitary/toxic-bert` (about 440 MB) to the Hugging Face cache.
 
-```powershell
-flask --app run create-admin
-```
+### Admin access (owner only)
+
+Anyone who registers on the website is a **regular user**. There is no way to become an admin from the website.
+Admins can only be created by whoever controls the server:
+
+- **On a hosting platform:** set `ADMIN_USERNAME`, `ADMIN_EMAIL` and `ADMIN_PASSWORD` (12+ characters) as
+  environment variables in the platform's dashboard. On every start the app creates or updates that account as admin.
+  Never put these values in the code or commit them.
+- **With terminal access:** run `flask --app run create-admin`.
 
 ### Configuration (environment variables)
 
@@ -98,6 +103,7 @@ flask --app run create-admin
 | `TRANSFORMER_MODEL` | `unitary/toxic-bert` | HF model id or local path; `""` = baseline only |
 | `THRESHOLD` | `0.5` | Bullying decision threshold |
 | `BATCH_LIMIT` | `500` | Max messages per batch / API call |
+| `ADMIN_USERNAME` / `ADMIN_EMAIL` / `ADMIN_PASSWORD` | unset | The owner's admin account (see above) |
 
 ### Docker
 
