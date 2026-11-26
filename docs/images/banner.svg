@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="0.55" stop-color="#1e2a5a"/>
+      <stop offset="1" stop-color="#3b5bdb"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5b7cfa"/>
+      <stop offset="1" stop-color="#3b5bdb"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#ffffff" opacity="0.07"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="320" rx="24" fill="url(#bg)"/>
+  <rect width="1280" height="320" rx="24" fill="url(#dots)"/>
+  <circle cx="1120" cy="60" r="180" fill="#d6336c" opacity="0.10"/>
+  <circle cx="1180" cy="300" r="120" fill="#5b7cfa" opacity="0.18"/>
+
+  <!-- shield -->
+  <g transform="translate(96 70)">
+    <path d="M90 0 L176 32 V92 C176 146 140 182 90 200 C40 182 4 146 4 92 V32 Z" fill="url(#shield)" stroke="#a5b4fc" stroke-width="3"/>
+    <!-- chat bubble -->
+    <rect x="44" y="58" width="92" height="60" rx="14" fill="#ffffff"/>
+    <path d="M66 116 L60 136 L84 118 Z" fill="#ffffff"/>
+    <rect x="58" y="74" width="40" height="8" rx="4" fill="#cbd5e1"/>
+    <rect x="58" y="92" width="64" height="8" rx="4" fill="#d6336c"/>
+    <!-- check -->
+    <circle cx="140" cy="130" r="22" fill="#2f9e44" stroke="#ffffff" stroke-width="4"/>
+    <path d="M130 130 L138 138 L151 123" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <text x="330" y="140" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="68" font-weight="800" fill="#ffffff">CyberGuard</text>
+  <text x="332" y="186" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="26" fill="#c7d2fe">Cyberbullying detection with NLP &amp; machine learning</text>
+
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="17" font-weight="600">
+    <rect x="332" y="214" width="196" height="38" rx="19" fill="#ffffff" fill-opacity="0.12" stroke="#a5b4fc" stroke-opacity="0.5"/>
+    <text x="430" y="239" fill="#ffffff" text-anchor="middle">TF-IDF + LogReg</text>
+    <rect x="540" y="214" width="150" height="38" rx="19" fill="#ffffff" fill-opacity="0.12" stroke="#a5b4fc" stroke-opacity="0.5"/>
+    <text x="615" y="239" fill="#ffffff" text-anchor="middle">toxic-BERT</text>
+    <rect x="702" y="214" width="170" height="38" rx="19" fill="#ffffff" fill-opacity="0.12" stroke="#a5b4fc" stroke-opacity="0.5"/>
+    <text x="787" y="239" fill="#ffffff" text-anchor="middle">Explainable AI</text>
+    <rect x="884" y="214" width="150" height="38" rx="19" fill="#d6336c" fill-opacity="0.85"/>
+    <text x="959" y="239" fill="#ffffff" text-anchor="middle">F1 0.935</text>
+  </g>
+</svg>
