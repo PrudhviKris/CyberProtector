@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Analyze{% endblock %}
+{% block content %}
+<div class="grid grid-2" style="align-items:start">
+  <div class="card">
+    <h1>Analyze a message</h1>
+    <p class="muted">Paste a comment, chat message or post. {% if not current_user.is_authenticated %}<a href="{{ url_for('auth.login') }}">Sign in</a> to keep a history.{% endif %}</p>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="field"><textarea name="text" maxlength="5000" placeholder="Type or paste text here…" required>{{ text }}</textarea></div>
+      <div class="row spread">
+        <span class="muted small">Up to 5,000 characters</span>
+        <button class="btn" type="submit">Analyze</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="stack">
+  {% if result %}
+    {% set pct = (result.score * 100) | round | int %}
+    <div class="verdict {{ 'bad' if result.is_bullying else 'good' }}">
+      <div class="gauge" style="--p: {{ pct }}; --g: {{ 'var(--danger)' if result.is_bullying else 'var(--ok)' }}"><span>{{ pct }}%</span></div>
+      <div>
+        <div class="big">{{ '🚨 Bullying detected' if result.is_bullying else '✅ No bullying detected' }}</div>
+        <div class="row small" style="margin-top:6px">
+          {% if result.is_bullying %}<span class="badge {{ result.severity }}">{{ result.severity | title }} severity</span>{% endif %}
+          {% if result.top_category %}<span class="badge bullying">{{ CATEGORY_LABELS.get(result.top_category, result.top_category) }}</span>{% endif %}
+          <span class="muted">Bullying probability</span>
+        </div>
+      </div>
+    </div>
+
+    {% if result.categories %}
+    <div class="card">
+      <h3>Category breakdown</h3>
+      <div class="bars">
+        {% for key, label in CATEGORY_LABELS.items() %}{% set v = result.categories.get(key, 0) %}
+        <div class="bar-row"><span>{{ label }}</span>
+          <div class="bar {{ 'hot' if v >= 0.5 }}"><i style="width: {{ (v * 100) | round(1) }}%"></i></div>
+          <span class="num muted">{{ (v * 100) | round | int }}%</span></div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+      <h3>Why this result?</h3>
+      {% set pos = result.highlights | selectattr('weight', 'gt', 0) | list %}
+      {% if pos and (result.is_bullying or result.baseline_score >= 0.3) %}
+        <p class="muted small">Highlighted words raised the bullying score. Darker highlights mean a bigger effect.</p>
+        <div class="explain">{% for seg, w in spans %}{% if w > 0 %}<mark style="--a: {{ (0.2 + w * 0.6) | round(2) }}">{{ seg }}</mark>{% else %}{{ seg }}{% endif %}{% endfor %}</div>
+        <div class="chips" style="margin-top:12px">{% for h in pos[:8] %}<span class="chip">{{ h.token }} · {{ (h.weight * 100) | round | int }}%</span>{% endfor %}</div>
+        <p class="muted small" style="margin-top:8px">The percentage shows each word's influence relative to the strongest word.</p>
+      {% else %}
+        <p class="muted">No individual word strongly pushed this message toward bullying.</p>
+      {% endif %}
+      <p class="muted small" style="margin-top:12px">
+        Classical model: {{ (result.baseline_score * 100) | round | int }}%
+        {% if result.transformer_score is not none %} · Transformer: {{ (result.transformer_score * 100) | round | int }}%{% endif %}
+      </p>
+    </div>
+  {% else %}
+    <div class="card"><h3>How it works</h3>
+      <ol class="muted">
+        <li>Text is normalised: lowercase, URLs and @mentions removed, and obfuscations like <code>f*ck</code> or <code>b1tch</code> decoded.</li>
+        <li>A TF-IDF model (word and character n-grams) and a fine-tuned BERT model each score the text.</li>
+        <li>The two scores are blended. Messages scoring ≥ 50% are flagged and graded by severity.</li>
+        <li>A word-occlusion analysis highlights the words that drove the decision.</li>
+      </ol>
+    </div>
+  {% endif %}
+  </div>
+</div>
+{% endblock %}

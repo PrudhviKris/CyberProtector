@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Model card{% endblock %}
+{% block content %}
+<h1>Model card</h1>
+<p class="muted">How CyberGuard's models were built and how well they perform on held-out data.</p>
+
+{% if metrics %}{% set d = metrics.deployed %}
+<div class="grid grid-4" style="margin:18px 0">
+  <div class="card stat"><div class="value">{{ (d.test_f1 * 100) | round(1) }}%</div><div class="label">F1 score (bullying)</div></div>
+  <div class="card stat"><div class="value">{{ (d.test_accuracy * 100) | round(1) }}%</div><div class="label">Accuracy</div></div>
+  <div class="card stat"><div class="value">{{ (d.test_precision * 100) | round(1) }}%</div><div class="label">Precision</div></div>
+  <div class="card stat"><div class="value">{{ d.test_roc_auc | round(3) }}</div><div class="label">ROC-AUC</div></div>
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3>Classical baseline</h3>
+    <p class="muted small">{{ d.model }} with {{ d.best_params }}. Features: TF-IDF word 1–2-grams + character 3–5-grams.
+      Data: {{ metrics.dataset_rows }} unique comments after cleaning and de-duplication ({{ (metrics.positive_rate * 100) | round(1) }}% bullying),
+      stratified 80/20 split: {{ metrics.train_rows }} train / {{ metrics.test_rows }} test.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Model</th><th class="num">5-fold CV F1</th><th class="num">Test F1</th><th class="num">Precision</th><th class="num">Recall</th></tr></thead>
+      <tbody>{% for r in metrics.comparison | sort(attribute='test_f1', reverse=true) %}
+        <tr><td>{{ r.model }}</td><td class="num">{{ '%.3f' % r.cv_f1_mean }} ± {{ '%.3f' % r.cv_f1_std }}</td>
+          <td class="num">{{ '%.3f' % r.test_f1 }}</td><td class="num">{{ '%.3f' % r.test_precision }}</td><td class="num">{{ '%.3f' % r.test_recall }}</td></tr>
+      {% endfor %}</tbody></table></div>
+  </div>
+  <div class="card">
+    <h3>Transformer</h3>
+    <p class="muted small"><code>{{ transformer or 'disabled' }}</code>: a BERT-base model fine-tuned on the Jigsaw Toxic Comment Classification dataset
+      (about 160k Wikipedia comments). It outputs independent probabilities for six labels.
+      Status: {% if transformer_ready %}<span class="badge non-bullying">loaded</span>{% elif transformer %}<span class="badge open">loading / unavailable</span>{% else %}<span class="badge">off</span>{% endif %}</p>
+    <h3 style="margin-top:16px">Ensemble</h3>
+    <p class="muted small">Final score = 0.4 × baseline + 0.6 × max(transformer labels). The message is flagged at ≥ 0.5.
+      Severity is high at ≥ 0.85 (or when the threat / severe-toxicity scores are high), medium at ≥ 0.70, and low otherwise.</p>
+    <h3 style="margin-top:16px">Explainability</h3>
+    <p class="muted small">Word occlusion: each distinct word is removed in turn, and the drop in the baseline's log-odds is that word's contribution, shown relative to the most influential word.</p>
+  </div>
+</div>
+
+<div class="grid grid-2" style="margin-top:18px">
+  <div class="card"><h3>Model comparison</h3><img src="{{ url_for('main.artifact', name='model_comparison.png') }}" alt="Bar chart comparing F1 scores of baseline models" style="width:100%;border-radius:8px;background:#fff"></div>
+  <div class="card"><h3>Confusion matrix</h3><img src="{{ url_for('main.artifact', name='confusion_matrix.png') }}" alt="Confusion matrix of the deployed model" style="width:100%;max-width:380px;border-radius:8px;background:#fff"></div>
+</div>
+{% else %}
+<div class="card"><p>No metrics found. Run <code>python training/train_baseline.py</code> to train the model and generate this report.</p></div>
+{% endif %}
+
+<div class="card prose" style="margin-top:18px">
+  <h3>What changed from v1</h3>
+  <ul class="small">
+    <li>The v1 notebook duplicated every row (<code>pd.concat([df, df])</code>) before splitting, which leaked test rows into training and inflated accuracy. v2 removes duplicates first.</li>
+    <li>The v1 app called <code>fit_transform</code> on each input, re-fitting the IDF weights on a single sentence. v2 ships one fitted sklearn Pipeline.</li>
+    <li>Added character n-grams and obfuscation decoding, so masked words like <code>f*ck</code> are still caught.</li>
+  </ul>
+</div>
+{% endblock %}

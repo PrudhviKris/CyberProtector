@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Help desk{% endblock %}
+{% block content %}
+<div class="grid grid-2" style="align-items:start">
+  <div class="card">
+    <h1>Help desk</h1>
+    <p class="muted">Report a wrong prediction, ask a question, or request help. Your ticket is saved and reviewed by an administrator.</p>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="field"><label for="email">Your email</label><input id="email" type="email" name="email" value="{{ email or '' }}" required></div>
+      <div class="field"><label for="subject">Subject</label>
+        <select id="subject" name="subject">
+          {% for s in ['General query', 'Wrong prediction', 'Report bullying', 'API / technical issue', 'Account help'] %}
+          <option {{ 'selected' if subject == s }}>{{ s }}</option>{% endfor %}
+        </select></div>
+      <div class="field"><label for="message">Message</label><textarea id="message" name="message" required>{{ message or '' }}</textarea></div>
+      <button class="btn" type="submit">Submit ticket</button>
+    </form>
+  </div>
+  <div class="card prose">
+    <h3>Need help right now?</h3>
+    <p>If you or someone you know is being bullied online:</p>
+    <ul>
+      <li>Don't respond or retaliate. Save screenshots as evidence.</li>
+      <li>Block the person and report them to the platform.</li>
+      <li>Talk to someone you trust: a parent, teacher or friend.</li>
+      <li>In India, report cybercrime at <strong>cybercrime.gov.in</strong> or call the helpline <strong>1930</strong>. For women in distress, call <strong>181</strong>.</li>
+      <li>If you are in immediate danger, call <strong>112</strong>.</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

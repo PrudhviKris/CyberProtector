@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}History{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="row spread" style="margin-bottom:14px">
+    <h1 style="margin:0">Your history</h1>
+    <a class="btn secondary sm" href="{{ url_for('main.history_export') }}">Export CSV</a>
+  </div>
+  <div class="tabs" style="margin-bottom:12px">
+    {% for key, label in [('all','All'), ('bullying','Bullying'), ('non-bullying','Clean')] %}
+    <a href="{{ url_for('main.history', filter=key) }}" class="{{ 'active' if flt == key }}">{{ label }}</a>{% endfor %}
+  </div>
+  {% if pagination.items %}
+  <div class="table-wrap"><table>
+    <thead><tr><th>When (UTC)</th><th>Text</th><th>Result</th><th>Score</th><th>Category</th><th>Source</th></tr></thead>
+    <tbody>
+    {% for r in pagination.items %}
+      <tr><td class="small muted">{{ r.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td class="text-cell">{{ r.text | truncate(180) }}</td>
+        <td><span class="badge {{ r.label }}">{{ r.label }}</span>{% if r.label == 'bullying' %} <span class="badge {{ r.severity }}">{{ r.severity }}</span>{% endif %}</td>
+        <td class="num">{{ (r.score * 100) | round | int }}%</td>
+        <td class="small">{{ CATEGORY_LABELS.get(r.top_category, '') if r.top_category else '' }}</td>
+        <td class="small muted">{{ r.source }}</td></tr>
+    {% endfor %}
+    </tbody></table></div>
+  <div class="pager">
+    {% if pagination.has_prev %}<a class="btn secondary sm" href="{{ url_for('main.history', page=pagination.prev_num, filter=flt) }}">← Prev</a>{% endif %}
+    <span class="muted small" style="align-self:center">Page {{ pagination.page }} of {{ pagination.pages }}</span>
+    {% if pagination.has_next %}<a class="btn secondary sm" href="{{ url_for('main.history', page=pagination.next_num, filter=flt) }}">Next →</a>{% endif %}
+  </div>
+  {% else %}
+  <p class="muted">Nothing here yet. <a href="{{ url_for('main.verify') }}">Analyze a message</a> to get started.</p>
+  {% endif %}
+</div>
+{% endblock %}

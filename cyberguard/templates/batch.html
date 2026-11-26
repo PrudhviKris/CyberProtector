@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Batch analysis{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Batch analysis</h1>
+  <p class="muted">Upload a <strong>.csv</strong> with a <code>text</code> (or <code>comment</code> / <code>message</code>) column, or a <strong>.txt</strong> file with one message per line. Up to {{ config.BATCH_LIMIT }} messages per file.</p>
+  <form method="post" enctype="multipart/form-data" class="row">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="file" name="file" accept=".csv,.txt" required style="max-width:420px">
+    <button class="btn" type="submit">Analyze file</button>
+  </form>
+</div>
+{% if results %}
+<div class="grid grid-4" style="margin-top:18px">
+  <div class="card stat"><div class="value">{{ results | length }}</div><div class="label">Messages analysed</div></div>
+  <div class="card stat"><div class="value" style="color:var(--danger)">{{ flagged }}</div><div class="label">Flagged as bullying</div></div>
+  <div class="card stat"><div class="value">{{ ((flagged / results|length) * 100) | round(1) }}%</div><div class="label">Bullying rate</div></div>
+  <div class="card stat"><div class="value">{{ results | selectattr('severity', 'equalto', 'high') | list | length }}</div><div class="label">High severity</div></div>
+</div>
+<div class="card" style="margin-top:18px">
+  <div class="row spread" style="margin-bottom:10px"><h3 style="margin:0">Results</h3>
+    <a class="btn secondary sm" href="{{ url_for('main.batch_export') }}">Download CSV</a></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>#</th><th>Text</th><th>Result</th><th>Score</th><th>Category</th></tr></thead>
+    <tbody>{% for r in results %}
+      <tr><td class="muted">{{ loop.index }}</td><td class="text-cell">{{ r.text | truncate(200) }}</td>
+        <td><span class="badge {{ r.label }}">{{ r.label }}</span>{% if r.is_bullying %} <span class="badge {{ r.severity }}">{{ r.severity }}</span>{% endif %}</td>
+        <td class="num">{{ (r.score * 100) | round | int }}%</td>
+        <td class="small">{{ CATEGORY_LABELS.get(r.top_category, '') if r.top_category else '' }}</td></tr>
+    {% endfor %}</tbody></table></div>
+</div>
+{% endif %}
+{% endblock %}

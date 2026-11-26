@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="hero" style="--hero: url('{{ url_for('static', filename='Homepage.jpg') }}')">
+  <div>
+    <h1>Detect cyberbullying before it does harm.</h1>
+    <p>CyberGuard combines a classical TF-IDF model with a pretrained transformer to flag abusive messages,
+       classify them into six categories, and show which words triggered the decision.</p>
+    <div class="row" style="margin-top:22px">
+      <a class="btn" href="{{ url_for('main.verify') }}">Analyze a message</a>
+      <a class="btn secondary" href="{{ url_for('main.model_card') }}">How it works</a>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-4" style="margin-top:24px">
+  <div class="card feature"><div class="icon">🧠</div><h3>Hybrid AI model</h3>
+    <p class="muted small">TF-IDF + logistic regression trained on 17k labelled comments, combined with the Jigsaw-trained <code>toxic-bert</code> transformer.</p></div>
+  <div class="card feature"><div class="icon">🏷️</div><h3>Six categories</h3>
+    <p class="muted small">Toxic, severe toxicity, obscene, threat, insult and identity hate, each with a severity level.</p></div>
+  <div class="card feature"><div class="icon">🔍</div><h3>Explainable</h3>
+    <p class="muted small">Highlights the exact words that pushed the message toward "bullying".</p></div>
+  <div class="card feature"><div class="icon">⚙️</div><h3>Built for scale</h3>
+    <p class="muted small">Batch CSV analysis, per-user history, an admin analytics dashboard and a REST API.</p></div>
+</section>
+{% endblock %}

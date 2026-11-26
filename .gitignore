@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+instance/
+.venv/
+venv/
+.env
+artifacts/_hf_runs/
+artifacts/distilbert-cyberbullying/
+.ipynb_checkpoints/

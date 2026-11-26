@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cyberbullying Detection</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .bg {
+            /* Full height image background */
+            background-image: url('{{ url_for('static', filename='Homepage.jpg') }}');
+            height: 100%;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        .content {
+            /* Centered text */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5); /* Slight black transparent background */
+            padding: 40px;
+            border-radius: 20px;
+        }
+        .content h1 {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 48px;
+            color: #f0db4f; /* Elegant Yellow Color */
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px #000000;
+        }
+        .btn {
+            display: inline-block;
+            margin: 15px;
+            padding: 15px 30px;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .verify { background-color: #28a745; color: white; }
+        .help { background-color: #ffc107; color: black; }
+        .about { background-color: #17a2b8; color: white; }
+        .btn:hover {
+            opacity: 0.9;
+            transform: scale(1.1);
+            transition: 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg">
+        <div class="content">
+            <h1>Welcome to Cyberbullying Detection</h1>
+            <a href="/verify" class="btn verify">Verify Text</a>
+            <a href="/helpdesk" class="btn help">Help Desk</a>
+            <a href="/about" class="btn about">About Us</a>
+        </div>
+    </div>
+</body>
+</html>
