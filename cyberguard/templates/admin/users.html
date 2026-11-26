@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="row spread" style="margin-bottom:12px"><h1 style="margin:0">Users</h1>
+    <a class="btn secondary sm" href="{{ url_for('admin.dashboard') }}">← Dashboard</a></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Username</th><th>Email</th><th>Role</th><th class="num">Analyses</th><th>Joined</th></tr></thead>
+    <tbody>{% for u, n in rows %}
+      <tr><td>{{ u.username }}</td><td class="small">{{ u.email }}</td>
+        <td>{% if u.is_admin %}<span class="badge low">admin</span>{% else %}<span class="badge">user</span>{% endif %}</td>
+        <td class="num">{{ n }}</td><td class="small muted">{{ u.created_at.strftime('%Y-%m-%d') }}</td></tr>
+    {% endfor %}</tbody></table></div>
+</div>
+{% endblock %}

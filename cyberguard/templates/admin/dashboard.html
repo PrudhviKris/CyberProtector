@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+<div class="row spread" style="margin-bottom:16px">
+  <h1 style="margin:0">Admin dashboard</h1>
+  <a class="btn secondary sm" href="{{ url_for('admin.users') }}">Manage users</a>
+</div>
+<div class="grid grid-4">
+  <div class="card stat"><div class="value">{{ total }}</div><div class="label">Total analyses</div></div>
+  <div class="card stat"><div class="value" style="color:var(--danger)">{{ flagged }}</div><div class="label">Flagged as bullying ({{ ((flagged / total * 100) if total else 0) | round(1) }}%)</div></div>
+  <div class="card stat"><div class="value">{{ users }}</div><div class="label">Registered users</div></div>
+  <div class="card stat"><div class="value" style="color:var(--warn)">{{ open_tickets }}</div><div class="label">Open tickets</div></div>
+</div>
+
+<div class="grid grid-2" style="margin-top:18px">
+  <div class="card"><h3>Analyses: last 14 days</h3><div class="chart-box"><canvas id="daily"></canvas></div></div>
+  <div class="card"><h3>Bullying by category</h3><div class="chart-box"><canvas id="cats"></canvas></div></div>
+  <div class="card"><h3>Severity of flagged messages</h3><div class="chart-box"><canvas id="sev"></canvas></div></div>
+  <div class="card"><h3>Traffic by source</h3><div class="chart-box"><canvas id="src"></canvas></div></div>
+</div>
+
+<div class="card" style="margin-top:18px">
+  <h3>Recently flagged</h3>
+  {% if recent %}<div class="table-wrap"><table>
+    <thead><tr><th>When (UTC)</th><th>User</th><th>Text</th><th>Severity</th><th>Category</th><th>Score</th></tr></thead>
+    <tbody>{% for r in recent %}
+      <tr><td class="small muted">{{ r.created_at.strftime('%m-%d %H:%M') }}</td><td class="small">{{ r.user.username if r.user else 'guest' }}</td>
+        <td class="text-cell">{{ r.text | truncate(140) }}</td><td><span class="badge {{ r.severity }}">{{ r.severity }}</span></td>
+        <td class="small">{{ CATEGORY_LABELS.get(r.top_category, '') if r.top_category else '' }}</td><td class="num">{{ (r.score*100)|round|int }}%</td></tr>
+    {% endfor %}</tbody></table></div>{% else %}<p class="muted">No flagged messages yet.</p>{% endif %}
+</div>
+
+<div class="card" style="margin-top:18px" id="tickets">
+  <h3>Help-desk tickets</h3>
+  {% if tickets %}<div class="table-wrap"><table>
+    <thead><tr><th>#</th><th>When (UTC)</th><th>From</th><th>Subject</th><th>Message</th><th>Status</th><th></th></tr></thead>
+    <tbody>{% for t in tickets %}
+      <tr><td class="muted">{{ t.id }}</td><td class="small muted">{{ t.created_at.strftime('%m-%d %H:%M') }}</td>
+        <td class="small"><a href="mailto:{{ t.email }}">{{ t.email }}</a></td><td class="small">{{ t.subject }}</td>
+        <td class="text-cell small">{{ t.message | truncate(160) }}</td><td><span class="badge {{ t.status }}">{{ t.status }}</span></td>
+        <td><form method="post" action="{{ url_for('admin.toggle_ticket', tid=t.id) }}" style="margin:0">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn secondary sm" type="submit">{{ 'Resolve' if t.status == 'open' else 'Reopen' }}</button></form></td></tr>
+    {% endfor %}</tbody></table></div>{% else %}<p class="muted">No tickets.</p>{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const data = {{ chart | tojson }};
+const css = getComputedStyle(document.documentElement);
+const c = n => css.getPropertyValue(n).trim();
+Chart.defaults.color = c('--muted'); Chart.defaults.borderColor = c('--border');
+Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+const opts = {responsive: true, maintainAspectRatio: false, plugins: {legend: {position: 'bottom'}}};
+const palette = ['#3b5bdb', '#d6336c', '#c77700', '#2b8a3e', '#7048e8', '#1098ad'];
+const label = {{ CATEGORY_LABELS | tojson }};
+new Chart(document.getElementById('daily'), {type: 'bar', data: {labels: data.days.map(d => d.slice(5)), datasets: [
+  {label: 'Bullying', data: data.bullying, backgroundColor: c('--danger'), maxBarThickness: 28},
+  {label: 'Clean', data: data.clean, backgroundColor: c('--ok'), maxBarThickness: 28}]},
+  options: {...opts, scales: {x: {stacked: true}, y: {stacked: true, beginAtZero: true, ticks: {precision: 0}}}}});
+const empty = obj => Object.keys(obj).length ? obj : {'No data yet': 0};
+const cats = empty(data.categories);
+new Chart(document.getElementById('cats'), {type: 'bar', data: {labels: Object.keys(cats).map(k => label[k] || k),
+  datasets: [{label: 'Messages', data: Object.values(cats), backgroundColor: c('--primary'), maxBarThickness: 28}]},
+  options: {...opts, indexAxis: 'y', plugins: {legend: {display: false}}, scales: {x: {beginAtZero: true, ticks: {precision: 0}}}}});
+const sevOrder = ['low', 'medium', 'high'];
+new Chart(document.getElementById('sev'), {type: 'doughnut', data: {labels: sevOrder.map(s => s[0].toUpperCase() + s.slice(1)),
+  datasets: [{data: sevOrder.map(s => data.severity[s] || 0), backgroundColor: [c('--primary'), c('--warn'), c('--danger')], borderColor: c('--surface')}]}, options: opts});
+const src = empty(data.sources);
+new Chart(document.getElementById('src'), {type: 'doughnut', data: {labels: Object.keys(src),
+  datasets: [{data: Object.values(src), backgroundColor: palette, borderColor: c('--surface')}]}, options: opts});
+</script>
+{% endblock %}

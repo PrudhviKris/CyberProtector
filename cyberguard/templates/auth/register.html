@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Create account{% endblock %}
+{% block content %}
+<div class="card" style="max-width:440px;margin:24px auto">
+  <h1>Create account</h1>
+  <p class="muted small">Save your analysis history, run batch jobs and get an API key.</p>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="field"><label for="username">Username</label><input id="username" type="text" name="username" value="{{ username or '' }}" required pattern="[A-Za-z0-9_]{3,40}"></div>
+    <div class="field"><label for="email">Email</label><input id="email" type="email" name="email" value="{{ email or '' }}" required></div>
+    <div class="field"><label for="password">Password</label><input id="password" type="password" name="password" minlength="8" required>
+      <span class="muted small">At least 8 characters.</span></div>
+    <button class="btn" type="submit" style="width:100%;justify-content:center">Create account</button>
+  </form>
+  <p class="muted small" style="margin-top:14px">Already registered? <a href="{{ url_for('auth.login') }}">Sign in</a></p>
+</div>
+{% endblock %}

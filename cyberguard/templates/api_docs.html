@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}API{% endblock %}
+{% block content %}
+<div class="card prose" style="max-width:900px;margin:auto">
+  <h1>REST API</h1>
+  <p>Integrate CyberGuard into chat apps, forums or moderation tools. Every request needs an API key, which you can find on your
+    {% if current_user.is_authenticated %}<a href="{{ url_for('auth.account') }}">account page</a>{% else %}account page (<a href="{{ url_for('auth.register') }}">create an account</a>){% endif %}.</p>
+
+  <h2>Analyze one message</h2>
+  <pre>POST {{ request.host_url }}api/v1/analyze
+X-API-Key: YOUR_KEY
+Content-Type: application/json
+
+{"text": "you are so stupid nobody likes you"}</pre>
+  <p>Response:</p>
+  <pre>{
+  "label": "bullying", "is_bullying": true, "score": 0.93, "severity": "high",
+  "top_category": "insult",
+  "categories": {"toxic": 0.98, "insult": 0.91, "obscene": 0.12, "threat": 0.01, ...},
+  "baseline_score": 0.88, "transformer_score": 0.98,
+  "highlights": [{"token": "stupid", "weight": 0.31}, ...],
+  "models": ["tfidf-logreg", "unitary/toxic-bert"]
+}</pre>
+
+  <h2>Analyze many messages</h2>
+  <pre>{"texts": ["first message", "second message"], "explain": false}</pre>
+  <p>Returns <code>{"results": [...]}</code>. Up to {{ config.BATCH_LIMIT }} texts per request.</p>
+
+  <h2>Examples</h2>
+  <pre>curl -X POST {{ request.host_url }}api/v1/analyze \
+  -H "X-API-Key: YOUR_KEY" -H "Content-Type: application/json" \
+  -d '{"text": "have a great day"}'</pre>
+  <pre>import requests
+r = requests.post("{{ request.host_url }}api/v1/analyze",
+                  headers={"X-API-Key": "YOUR_KEY"}, json={"text": "have a great day"})
+print(r.json()["label"])</pre>
+
+  <h2>Health check</h2>
+  <pre>GET {{ request.host_url }}api/v1/health</pre>
+  <h2>Errors</h2>
+  <p><code>401</code>: missing or invalid key · <code>400</code>: invalid body · <code>413</code>: too many texts</p>
+</div>
+{% endblock %}

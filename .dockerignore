@@ -1,0 +1,7 @@
+.git
+legacy
+instance
+__pycache__
+.pytest_cache
+*.ipynb
+artifacts/_hf_runs

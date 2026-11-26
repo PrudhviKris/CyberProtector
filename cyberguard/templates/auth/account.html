@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Account{% endblock %}
+{% block content %}
+<div class="grid grid-2" style="align-items:start">
+  <div class="card">
+    <h1>{{ current_user.username }}</h1>
+    <p class="muted">{{ current_user.email }}{% if current_user.is_admin %} · <span class="badge low">Administrator</span>{% endif %}</p>
+    <p class="muted small">Member since {{ current_user.created_at.strftime('%d %b %Y') }} · {{ current_user.analyses.count() }} analyses</p>
+  </div>
+  <div class="card">
+    <h3>API key</h3>
+    <p class="muted small">Use this key in the <code>X-API-Key</code> header. Keep it secret. See the <a href="{{ url_for('main.api_docs') }}">API docs</a>.</p>
+    <pre id="key">{{ current_user.api_key }}</pre>
+    <form method="post" class="row">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn secondary sm" type="button" onclick="navigator.clipboard.writeText(document.getElementById('key').textContent.trim()); this.textContent='Copied'">Copy</button>
+      <button class="btn secondary sm" type="submit" name="action" value="rotate" onclick="return confirm('Generate a new key? The old one will stop working.')">Regenerate</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

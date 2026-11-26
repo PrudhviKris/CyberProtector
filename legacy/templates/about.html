@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Cyberbullying Detection</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('{{ url_for('static', filename='AbutUs.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #fff;
+            overflow-y: auto;
+        }
+        .overlay {
+            background: rgba(0, 0, 0, 0.6); /* Black transparent overlay */
+            width: 100%;
+            min-height: 100%;
+            padding: 50px;
+            box-sizing: border-box;
+        }
+        .content {
+            max-width: 900px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1); /* Slight white overlay inside */
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        h1, h2 {
+            color: #00e6e6;
+            text-shadow: 2px 2px 5px black;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.8;
+            text-align: justify;
+            color: #ffffff;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #00ffff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <div class="content">
+            <h1>About Cyberbullying Detection</h1>
+
+            <h2>What is Cyberbullying?</h2>
+            <p>Cyberbullying involves the use of electronic communication to bully a person, typically by sending messages of an intimidating or threatening nature.
+            It has become increasingly common, especially among teenagers, as the digital space becomes an essential part of life. Cyberbullying can cause deep emotional
+            scars, and its effects are often long-lasting, impacting mental health, social interactions, and overall well-being.</p>
+
+            <h2>Why is Cyberbullying Detection Important?</h2>
+            <p>Detecting cyberbullying early can prevent further harm to the victims. With the increasing reliance on social media, messaging platforms, and online forums,
+            there is a growing need for systems that can monitor and detect offensive or harmful content. Our platform helps by analyzing text input and providing a
+            prediction about whether the content is bullying or not, thereby creating a safer online environment.</p>
+
+            <h2>How Our System Works</h2>
+            <p>Our Cyberbullying Detection system is built using advanced Natural Language Processing (NLP) techniques and Machine Learning models. We have trained
+            the model on thousands of examples of bullying and non-bullying texts. By using a TF-IDF Vectorizer, we convert text into numerical features, and a tuned
+            Linear Support Vector Classifier (LinearSVC) then predicts the likelihood of the text being bullying content.</p>
+
+            <h2>Features of Our Platform</h2>
+            <p>
+                - Instant verification of text inputs.<br>
+                - User-friendly interface.<br>
+                - Secure and private text handling.<br>
+                - Continuously improving with new data and feedback.<br>
+                - Accessible to everyone with internet access.<br>
+            </p>
+
+            <h2>Our Mission and Vision</h2>
+            <p>Our mission is to foster a safer online space where users feel respected and protected. We envision a world where technology plays a pivotal role in reducing
+            online harassment, promoting positive interactions, and nurturing digital well-being. By combining innovation with empathy, we aim to contribute to a more
+            inclusive and supportive digital environment for all users, especially the youth who are most vulnerable to online abuse.</p>
+
+            <h2>Continuous Improvement</h2>
+            <p>We are committed to continuously enhancing the detection capabilities of our platform by incorporating user feedback, leveraging new machine learning models,
+            and updating our datasets regularly. We believe that staying ahead of emerging cyberbullying patterns is essential to maintaining an effective and relevant
+            detection system.</p>
+
+            <h2>Thank You</h2>
+            <p>We thank all our users, testers, contributors, and supporters who have made this project a reality. Together, we can stand against cyberbullying and
+            build a digital world that is safer, kinder, and more empathetic for everyone.</p>
+
+            <a href="/" class="back-link">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+{
+  "dataset_rows": 17031,
+  "train_rows": 13624,
+  "test_rows": 3407,
+  "positive_rate": 0.619752216546298,
+  "comparison": [
+    {
+      "model": "LogisticRegression",
+      "cv_f1_mean": 0.9273659458874789,
+      "cv_f1_std": 0.004489433623296073,
+      "test_accuracy": 0.9125330202524214,
+      "test_precision": 0.9534767383691846,
+      "test_recall": 0.9028896257697774,
+      "test_f1": 0.9274939172749391,
+      "seconds": 25.0
+    },
+    {
+      "model": "LinearSVC",
+      "cv_f1_mean": 0.9394868602304903,
+      "cv_f1_std": 0.003951172347685168,
+      "test_accuracy": 0.9210449075432933,
+      "test_precision": 0.9488304093567251,
+      "test_recall": 0.9223117006158219,
+      "test_f1": 0.9353831371607014,
+      "seconds": 21.6
+    },
+    {
+      "model": "ComplementNB",
+      "cv_f1_mean": 0.905308769043175,
+      "cv_f1_std": 0.007027168092829779,
+      "test_accuracy": 0.8843557381860875,
+      "test_precision": 0.9074513526340768,
+      "test_recall": 0.9057318806252961,
+      "test_f1": 0.9065908013276435,
+      "seconds": 19.9
+    },
+    {
+      "model": "SGDClassifier",
+      "cv_f1_mean": 0.9383174039587248,
+      "cv_f1_std": 0.0030380768190697415,
+      "test_accuracy": 0.922805987672439,
+      "test_precision": 0.9485436893203884,
+      "test_recall": 0.9256276646139271,
+      "test_f1": 0.9369455766003356,
+      "seconds": 19.1
+    },
+    {
+      "model": "RandomForest",
+      "cv_f1_mean": 0.9264213948972989,
+      "cv_f1_std": 0.0039645614183562074,
+      "test_accuracy": 0.9131200469621368,
+      "test_precision": 0.935251798561151,
+      "test_recall": 0.9237328280435813,
+      "test_f1": 0.9294566253574833,
+      "seconds": 85.4
+    }
+  ],
+  "deployed": {
+    "model": "LogisticRegression (tuned)",
+    "best_params": {
+      "clf__C": 30
+    },
+    "test_accuracy": 0.9210449075432933,
+    "test_precision": 0.9483933787731256,
+    "test_recall": 0.9227854097584084,
+    "test_f1": 0.9354141656662666,
+    "test_roc_auc": 0.97426545841594,
+    "report": {
+      "non-bullying": {
+        "precision": 0.8795269770879527,
+        "recall": 0.9182098765432098,
+        "f1-score": 0.8984522461306154,
+        "support": 1296.0
+      },
+      "bullying": {
+        "precision": 0.9483933787731256,
+        "recall": 0.9227854097584084,
+        "f1-score": 0.9354141656662666,
+        "support": 2111.0
+      },
+      "accuracy": 0.9210449075432933,
+      "macro avg": {
+        "precision": 0.9139601779305391,
+        "recall": 0.9204976431508092,
+        "f1-score": 0.916933205898441,
+        "support": 3407.0
+      },
+      "weighted avg": {
+        "precision": 0.9221970604332418,
+        "recall": 0.9210449075432933,
+        "f1-score": 0.9213540988279326,
+        "support": 3407.0
+      }
+    }
+  }
+}

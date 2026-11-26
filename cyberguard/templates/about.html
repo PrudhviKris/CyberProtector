@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+{% block content %}
+<div class="card prose" style="max-width:860px;margin:auto">
+  <h1>About CyberGuard</h1>
+  <h2>What is cyberbullying?</h2>
+  <p>Cyberbullying is the use of electronic communication to bully a person, typically by sending intimidating, insulting or threatening messages.
+  It has become increasingly common, especially among teenagers, and it can leave long-lasting effects on mental health, social life and well-being.</p>
+  <h2>Why detection matters</h2>
+  <p>Detecting cyberbullying early can prevent further harm. Social media, messaging platforms and forums carry far more messages than human moderators can read,
+  so automated systems that flag harmful content are essential for a safer online environment.</p>
+  <h2>How the system works</h2>
+  <p>CyberGuard uses Natural Language Processing and Machine Learning. Incoming text is normalised: lowercased, stripped of URLs and mentions, and decoded from
+  obfuscations such as <code>f*ck</code> or <code>$tupid</code>. Two models then score it:</p>
+  <ul>
+    <li><strong>Classical model:</strong> TF-IDF features (word 1–2-grams and character 3–5-grams) fed to a tuned Logistic Regression classifier, trained on our labelled dataset.</li>
+    <li><strong>Transformer model:</strong> <code>unitary/toxic-bert</code>, a BERT model fine-tuned on the Jigsaw Toxic Comment dataset, which scores six abuse categories.</li>
+  </ul>
+  <p>The scores are blended into one bullying probability, graded by severity, and explained by highlighting the words that drove the decision.</p>
+  <h2>Features</h2>
+  <ul>
+    <li>Instant analysis with category breakdown and explanations</li>
+    <li>Batch analysis of CSV/TXT files with downloadable results</li>
+    <li>Personal history for signed-in users</li>
+    <li>Admin analytics dashboard and help-desk ticket management</li>
+    <li>REST API with per-user API keys for integration into other apps</li>
+  </ul>
+  <h2>Mission</h2>
+  <p>Our mission is to foster a safer online space where users feel respected and protected, using technology to reduce online harassment and support
+  digital well-being, especially for young people, who are most vulnerable to online abuse.</p>
+  <h2>Limitations</h2>
+  <p>No model is perfect. Sarcasm, reclaimed slurs, code-mixed language and new slang can cause errors. CyberGuard is designed to assist human moderators, not replace them.</p>
+</div>
+{% endblock %}
