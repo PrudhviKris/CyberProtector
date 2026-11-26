@@ -10,6 +10,14 @@ license: mit
 ---
 # CyberGuard: Cyberbullying Detection with NLP & Machine Learning
 
+🌐 **Live Demo:** [cyberprotector.onrender.com](https://cyberprotector.onrender.com) · [Analyse page](https://cyberprotector.onrender.com/verify) · [Model card](https://cyberprotector.onrender.com/model)
+
+> Hosted on Render's free tier (baseline model only) — the first load may take ~30–50 s while the server wakes up.
+
+### 🎬 Demo Video
+
+https://github.com/user-attachments/assets/a687d2d8-9fa1-4828-aeff-1b202f9f04d9
+
 CyberGuard is a full-stack web platform that detects cyberbullying in text. It combines a classical
 **TF-IDF + Logistic Regression** model trained on about 17k labelled comments with a pretrained
 **BERT transformer** (`unitary/toxic-bert`). Every result includes:
