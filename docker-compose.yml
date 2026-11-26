@@ -1,9 +1,9 @@
 services:
   web:
     build: .
-    ports: ["5000:5000"]
+    ports: ["5000:7860"]
     environment:
-      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      SECRET_KEY: ${SECRET_KEY:?set SECRET_KEY in .env}
       DATABASE_URL: sqlite:////app/instance/cyberguard.db
       ADMIN_USERNAME: ${ADMIN_USERNAME}
       ADMIN_EMAIL: ${ADMIN_EMAIL}

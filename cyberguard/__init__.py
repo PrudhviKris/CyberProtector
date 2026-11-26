@@ -71,8 +71,10 @@ def create_app(config=Config):
         db.create_all()
         _bootstrap_admin(app)
 
-    if not app.debug and not app.testing and app.config["SECRET_KEY"] == "dev-change-me":
-        app.logger.warning("SECRET_KEY is the default value. Set a strong SECRET_KEY before deploying!")
+    # if not app.debug and not app.testing and app.config["SECRET_KEY"] == "dev-change-me":
+    #     app.logger.warning("SECRET_KEY is the default value. Set a strong SECRET_KEY before deploying!")
+    if not app.debug and not app.testing and app.config["SECRET_KEY"] in ("dev-change-me", "change-me-in-production"):
+        raise RuntimeError("SECRET_KEY is not set. Refusing to start with a public default key.")
 
     @app.cli.command("create-admin")
     @click.option("--username", prompt=True)

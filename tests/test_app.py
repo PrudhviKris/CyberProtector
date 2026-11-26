@@ -47,11 +47,11 @@ def test_public_pages(client, path):
     assert client.get(path).status_code == 200
 
 
-def test_verify_records_analysis(client, app):
+def test_verify_does_not_store_anonymous_text(client, app):
     r = client.post("/verify", data={"text": "you are an idiot"})
     assert r.status_code == 200 and b"Bullying detected" in r.data
     with app.app_context():
-        assert AnalysisRecord.query.count() == 1
+        assert AnalysisRecord.query.count() == 0
 
 
 def test_login_required_pages_redirect(client):

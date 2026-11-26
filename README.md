@@ -1,3 +1,13 @@
+---
+title: CyberGuard
+emoji: 🛡️
+colorFrom: red
+colorTo: gray
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+---
 # CyberGuard: Cyberbullying Detection with NLP & Machine Learning
 
 CyberGuard is a full-stack web platform that detects cyberbullying in text. It combines a classical

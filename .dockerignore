@@ -1,7 +1,14 @@
 .git
+.github
+.claude
+venv
+.venv
 legacy
 instance
 __pycache__
 .pytest_cache
 *.ipynb
 artifacts/_hf_runs
+dataset.csv
+training
+.env

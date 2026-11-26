@@ -30,9 +30,9 @@ def verify():
         else:
             result = get_predictor().analyze(text)
             spans = highlight_spans(result.text, result.highlights)
-            db.session.add(AnalysisRecord.from_analysis(
-                result, current_user if current_user.is_authenticated else None, "web"))
-            db.session.commit()
+            if current_user.is_authenticated:          # don't store anonymous visitors' text
+                db.session.add(AnalysisRecord.from_analysis(result, current_user, "web"))
+                db.session.commit()
     return render_template("verify.html", result=result, spans=spans, text=text)
 
 
